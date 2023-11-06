@@ -17,6 +17,7 @@ class Player extends GameObject {
         this.is_me = is_me;
         this.eps = 0.1;
         this.friction = 0.9;
+        this.spent_time = 0;
 
         this.cur_skill = null;
     }
@@ -81,6 +82,16 @@ class Player extends GameObject {
     }
 
     is_attacked(angle, damage) {
+        for (let i = 0; i < 20 + Math.random() * 5; i ++) {
+            let x = this.x, y = this.y;
+            let radius = this.radius * Math.random() * 0.1;
+            let angle = Math.PI * 2 * Math.random();
+            let vx = Math.cos(angle), vy = Math.sin(angle);
+            let color = this.color;
+            let speed = this.speed * 10;
+            let move_length = this.radius * Math.random() * 5;
+            new Particle(this.playground, x, y, radius, vx, vy, color, speed, move_length);
+        }
         this.radius -= damage;
         if (this.radius < 10) {
             this.destroy();
@@ -88,10 +99,19 @@ class Player extends GameObject {
         }
         this.damage_x = Math.cos(angle);
         this.damage_y = Math.sin(angle);
-        this.damage_speed = damage * 120;
+        this.damage_speed = damage * 100;
+        this.speed *= 0.8;
     }
 
     update() {
+        this.spent_time += this.timedelta / 1000;
+        if (!this.is_me && this.spent_time > 3 && Math.random() < 1 / 300.0) {
+            let player = this.playground.players[Math.floor(Math.random() * this.playground.players.length)];
+            let tx = player.x + player.speed * this.vx * this.timedelta / 1000 * 0.3;
+            let ty = player.y + player.speed * this.vy * this.timedelta / 1000 * 0.3;
+            this.shoot_fireball(tx, ty);
+        }
+
         if (this.damage_speed > 10) {
             this.vx = this.vy = 0;
             this.move_length = 0;
@@ -121,5 +141,13 @@ class Player extends GameObject {
         this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
+    }
+
+    on_destroy() {
+        for (let i = 0; i < this.playground.players.length; i ++) {
+            if (this.playground.players[i] === this) {
+                this.playground.players.splice(i, 1);
+            }
+        }
     }
 }
