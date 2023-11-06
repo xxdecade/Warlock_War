@@ -21,7 +21,7 @@ class GameObject {
     }
 
     destroy() {
-        this.on_destory();
+        this.on_destroy();
 
         for (let i = 0; i < GAME_OBJECTS.length; i ++) {
             if (GAME_OBJECTS[i] === this) {
