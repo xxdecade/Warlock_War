@@ -547,12 +547,14 @@ class Settings {
     </div>
     <div class="web_info_show">
         <div class="beian_show">
+            &nbsp
             <a href="https://beian.miit.gov.cn/#/Integrated/index">ICP备案号：苏ICP备2023001614号-1</a>
         </div>
         <div class="other_info_show">
             <a href="mailto:xxdecade@163.com"">联系作者</a>
-            &nbsp
+            &nbsp &nbsp
             <a href="https://github.com/xxdecade/Warlock_War">项目地址</a>
+            &nbsp
         </div>
 </div>
 `);
