@@ -23,7 +23,7 @@ def register(request):
     user = User(username=username)
     user.set_password(password)
     user.save()
-    Player.objects.create(user=user, photo="https://inews.gtimg.com/newsapp_match/0/4957255630/0.jpg")
+    Player.objects.create(user=user, photo="https://pic4.zhimg.com/80/v2-5d171c08ec8318309e186d7855947423_720w.webp")
     login(request, user)
     return JsonResponse({
         'result': "success",

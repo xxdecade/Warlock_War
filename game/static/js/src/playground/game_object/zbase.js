@@ -9,15 +9,12 @@ class GameObject {
     }
 
     start() {
-        
     }
 
     update() {
-        
     }
 
     on_destroy() {
-        
     }
 
     destroy() {
