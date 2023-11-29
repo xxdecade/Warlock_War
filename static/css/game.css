@@ -41,14 +41,6 @@
     height: 7vh;
 }
 
-.game_settings_logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-
 .game_settings_item {
     width: 100%;
     height: 100%;
@@ -96,12 +88,21 @@
     cursor: pointer;
 }
 
-.game_settings_wechat > img,
-.game_settings_qq > img {
-    margin-right: 20px;
+.game_settings_wechat,
+.game_settings_qq {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.game_settings_wechat img,
+.game_settings_qq img {
+    width: 30px;
     border-radius: 30px;
     cursor: pointer;
 }
+
 
 .game_settings_register {
     height: 49vh;
