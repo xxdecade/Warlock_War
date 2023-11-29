@@ -32,9 +32,13 @@ class Settings {
         <div class="game_settings_options">
             注册
         </div>
-        <br><br>
-        <div class="game_settings_wechat">
-            <img width="35" src="https://jiyuhang.com/static/image/settings/wechat_logo.jpg">
+        <div class="game_settings_logo>
+            <div class="game_settings_wechat">
+                <img width="35" src="https://jiyuhang.com/static/image/settings/wechatlogo.png">
+            </div>
+            <div class="game_settings_qq">
+                <img width="35" src="https://jiyuhang.com/static/image/settings/qqlogo.png">
+            </div>
         </div>
     </div>
     <div class="game_settings_register">

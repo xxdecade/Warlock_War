@@ -41,10 +41,13 @@
     height: 7vh;
 }
 
-.game_settings_wechat {
-    display: block;
-    height: 7vh;
+.game_settings_logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
+
 
 .game_settings_item {
     width: 100%;
@@ -93,11 +96,9 @@
     cursor: pointer;
 }
 
-.game_settings_wechat > img {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.game_settings_wechat > img,
+.game_settings_qq > img {
+    margin-right: 20px;
     border-radius: 30px;
     cursor: pointer;
 }

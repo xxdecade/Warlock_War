@@ -629,7 +629,10 @@ class Settings {
         </div>
         <br><br>
         <div class="game_settings_wechat">
-            <img width="35" src="https://jiyuhang.com/static/image/settings/wechat_logo.jpg">
+            <img width="35" src="https://jiyuhang.com/static/image/settings/wechatlogo.png">
+        </div>
+        <div class="game_settings_qq">
+            <img width="35" src="https://jiyuhang.com/static/image/settings/qqlogo.png">
         </div>
     </div>
     <div class="game_settings_register">
