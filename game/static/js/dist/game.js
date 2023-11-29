@@ -42,7 +42,6 @@ class GameMenu {
             outer.root.playground.show("multi mode");
         });
         this.$settings.click(function() {
-            console.log("click settings");
             outer.root.settings.logout_on_remote();
         });
     }
@@ -191,8 +190,6 @@ class Particle extends GameObject {
 }
 class Player extends GameObject {
     constructor(playground, x, y, radius, color, speed, character, username, photo) {
-        console.log(character, username, photo);
-
         super();
         this.playground = playground;
         this.ctx = this.playground.game_map.ctx;
@@ -225,7 +222,7 @@ class Player extends GameObject {
     start() {
         if (this.character === "me") {
             this.add_listening_events();
-        } else {
+        } else if (this.character === "robot") {
             let tx = Math.random() * this.playground.width / this.playground.scale;
             let ty = Math.random() * this.playground.height / this.playground.scale;
             this.move_to(tx, ty);
@@ -239,8 +236,14 @@ class Player extends GameObject {
         });
         this.playground.game_map.$canvas.mousedown(function(e) {
             const rect = outer.ctx.canvas.getBoundingClientRect();
-            if (e.which == 3) {
-                outer.move_to((e.clientX - rect.left) / outer.playground.scale, (e.clientY - rect.top) / outer.playground.scale);
+            if (e.which === 3) {
+                let tx = (e.clientX - rect.left) / outer.playground.scale;
+                let ty = (e.clientY - rect.top) / outer.playground.scale;
+                outer.move_to(tx, ty);
+
+                if (outer.playground.mode === "multi mode") {
+                    outer.playground.mps.send_move_to(tx, ty);
+                }
             } else if (e.which == 1) {
                 if (outer.cur_skill == "fireball") {
                     outer.shoot_fireball((e.clientX - rect.left) / outer.playground.scale, (e.clientY - rect.top) / outer.playground.scale);
@@ -462,6 +465,8 @@ class MultiPlayerSocket{
             let event = data.event;
             if (event === "create_player") {
                 outer.receive_create_player(uuid, data.username, data.photo);
+            } else if (event === "move_to") {
+                outer.receive_move_to(uuid, data.tx, data.ty);
             }
         };
     }
@@ -474,6 +479,17 @@ class MultiPlayerSocket{
             'username': username,
             'photo': photo,
         }));
+    }
+
+    get_player(uuid) {
+        let players = this.playground.players;
+        for (let i = 0; i < players.length; i ++ ) {
+            let player = players[i];
+            if (player.uuid === uuid)
+                return player;
+        }
+
+        return null;
     }
 
     receive_create_player(uuid, username, photo) {
@@ -493,6 +509,23 @@ class MultiPlayerSocket{
         this.playground.players.push(player);
     }
 
+    send_move_to(tx, ty) {
+        let outer = this;
+        this.ws.send(JSON.stringify({
+            'event': "move_to",
+            'uuid': outer.uuid,
+            'tx': tx,
+            'ty': ty,
+        }))
+    }
+
+    receive_move_to(uuid, tx, ty) {
+        let player = this.get_player(uuid);
+
+        if (player) {
+            player.move_to(tx, ty);
+        }
+    }
 }
 class GamePlayground {
     constructor(root) {
@@ -535,6 +568,7 @@ class GamePlayground {
         this.width = this.$playground.width();
         this.height = this.$playground.height();
         this.game_map = new GameMap(this);
+        this.mode = mode;
         this.resize();
         this.players = [];
         this.players.push(new Player(this, this.width / 2 / this.scale, 0.5, 0.05 , "white", 0.15, "me", this.root.settings.username, this.root.settings.photo));
@@ -709,7 +743,6 @@ class Settings {
                 password: password,
             },
             success: function(resp) {
-                console.log(resp);
                 if (resp.result === "success") {
                     location.reload();
                 } else {
