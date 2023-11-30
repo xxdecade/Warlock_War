@@ -248,12 +248,13 @@ class Settings {
     }
 
     toggleqrcode() {
+        let outer = this;
         this.$callauther.on('mouseover', () => {
-                this.$vxqrcode.show();
+            outer.$wxqrcode.show();
         });
 
         this.$callauther.on('mouseout', () => {
-                this.$vxqrcode.hide();
+            outer.$wxqrcode.hide();
         });
     }
 }
