@@ -88,7 +88,6 @@
     cursor: pointer;
 }
 
-.game_settings_wechat,
 .game_settings_qq {
     display: flex;
     justify-content: center;
@@ -96,10 +95,8 @@
     margin-top: 20px;
 }
 
-.game_settings_wechat img,
 .game_settings_qq img {
-    width: 30px;
-    border-radius: 30px;
+    width: 26px;
     cursor: pointer;
 }
 
@@ -185,7 +182,7 @@
 }
 
 .beian_show {
-    text-align: center; 
+    text-align: center;
 }
 
 .other_info_show {
@@ -193,4 +190,13 @@
     align-items: center;
 }
 
+.wechatqrcode {
+    position: fixed;
+    bottom: 48px;
+    right: 185px;
+    width: 10px;
+    height: auto;
+}
 
+.callauther {
+}

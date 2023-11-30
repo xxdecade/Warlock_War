@@ -32,13 +32,9 @@ class Settings {
         <div class="game_settings_options">
             注册
         </div>
-        <div class="game_settings_logo>
-            <div class="game_settings_wechat">
-                <img width="35" src="https://jiyuhang.com/static/image/settings/wechatlogo.png">
-            </div>
-            <div class="game_settings_qq">
-                <img width="35" src="https://jiyuhang.com/static/image/settings/qqlogo.png">
-            </div>
+        <br>
+        <div class="game_settings_qq">
+            <img width="26" src="https://jiyuhang.com/static/image/settings/qqlogo.png">
         </div>
     </div>
     <div class="game_settings_register">
@@ -71,17 +67,23 @@ class Settings {
             登录
         </div>
     </div>
+    <div class="wechatqrcode">
+        <img width="150" src="https://jiyuhang.com/static/image/settings/wechatqrcode.jpg">
+    </div>
     <div class="web_info_show">
         <div class="beian_show">
             &nbsp
             <a href="https://beian.miit.gov.cn/#/Integrated/index">ICP备案号：苏ICP备2023001614号-1</a>
         </div>
         <div class="other_info_show">
-            <a href="mailto:xxdecade@163.com"">联系作者</a>
+            <div class="callauther">
+                <a>联系作者</a>
+            </div>
             &nbsp &nbsp
-            <a href="https://github.com/xxdecade/Warlock_War">项目地址</a>
+            <a href="https://github.com/xxdecade/ballballbang">项目地址</a>
             &nbsp
         </div>
+    </div>
 </div>
 `);
         this.$login = this.$settings.find(".game_settings_login");
@@ -102,6 +104,11 @@ class Settings {
         this.$register_login = this.$register.find(".game_settings_options");
 
         this.$register.hide();
+
+        this.$wxqrcode = this.$settings.find(".wechatqrcode");
+        this.$wxqrcode.hide();
+        this.$callauther = this.$settings.find(".callauther");
+        this.toggleqrcode();
 
         this.root.$game.append(this.$settings);
 
@@ -238,5 +245,15 @@ class Settings {
 
     show() {
         this.$setting.show();
+    }
+
+    toggleqrcode() {
+        this.$callauther.on('mouseover', () => {
+                this.$vxqrcode.show();
+        });
+
+        this.$callauther.on('mouseout', () => {
+                this.$vxqrcode.hide();
+        });
     }
 }
