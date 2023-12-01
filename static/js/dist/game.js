@@ -210,6 +210,7 @@ class Player extends GameObject {
         this.eps = 0.01;
         this.friction = 0.9;
         this.spent_time = 0;
+        this.fireballs = [];
 
         this.cur_skill = null;
 
@@ -244,9 +245,15 @@ class Player extends GameObject {
                 if (outer.playground.mode === "multi mode") {
                     outer.playground.mps.send_move_to(tx, ty);
                 }
-            } else if (e.which == 1) {
+            } else if (e.which === 1) {
+                let tx = (e.clientX - rect.left) / outer.playground.scale;
+                let ty = (e.clientY - rect.top) / outer.playground.scale;
                 if (outer.cur_skill == "fireball") {
-                    outer.shoot_fireball((e.clientX - rect.left) / outer.playground.scale, (e.clientY - rect.top) / outer.playground.scale);
+                    let fireball = outer.shoot_fireball(tx, ty);
+
+                    if (outer.playground.mode === "multi mode") {
+                        outer.playground.mps.send_shoot_fireball(tx, ty, fireball.uuid);
+                    }
                 }
 
                 outer.cur_skill = null;
@@ -269,7 +276,20 @@ class Player extends GameObject {
         let color = "orange";
         let speed = 0.5;
         let move_length = 1;
-        new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01);
+        let fireball = new FireBall(this.playground, this, x, y, radius, vx, vy, color, speed, move_length, 0.01);
+        this.fireballs.push(fireball);
+
+        return fireball;
+    }
+
+    destroy_fireball(uuid) {
+        for (let i = 0; i < this.fireballs.length; i ++ ) {
+            let fireball = this.fireballs[i];
+            if (fireball.uuid === uuid) {
+                fireball.destroy();
+                break;
+            }
+        }
     }
 
     get_dist(x1, y1, x2, y2) {
@@ -364,9 +384,10 @@ class Player extends GameObject {
     }
 
     on_destroy() {
-        for (let i = 0; i < this.playground.players.length; i ++) {
+        for (let i = 0; i < this.playground.players.length; i ++ ) {
             if (this.playground.players[i] === this) {
                 this.playground.players.splice(i, 1);
+                break;
             }
         }
     }
@@ -399,19 +420,27 @@ class FireBall extends GameObject {
             return false;
         }
 
+        this.update_move();
+        this.update_attack();
+
+        this.render();
+    }
+
+    update_move() {
         let moved = Math.min(this.move_length, this.speed * this.timedelta / 1000);
         this.x += this.vx * moved;
         this.y += this.vy * moved;
         this.move_length -= moved;
+    }
 
-        for (let i = 0; i < this.playground.players.length; i ++) {
+    update_attack() {
+        for (let i = 0; i < this.playground.players.length; i ++ ) {
             let player = this.playground.players[i];
             if (this.player !== player && this.is_collision(player)) {
                 this.attack(player);
+                break;
             }
         }
-
-        this.render();
     }
 
     get_dist(x1, y1, x2, y2) {
@@ -440,6 +469,16 @@ class FireBall extends GameObject {
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
     }
+
+    on_destroy() {
+        let fireballs = this.player.fireballs;
+        for (let i = 0; i < fireballs.length; i ++ ) {
+            if (fireballs[i] === this) {
+                fireballs.splice(i, 1);
+                break;
+            }
+        }
+    }
 }
 class MultiPlayerSocket{
     constructor(playground) {
@@ -467,6 +506,8 @@ class MultiPlayerSocket{
                 outer.receive_create_player(uuid, data.username, data.photo);
             } else if (event === "move_to") {
                 outer.receive_move_to(uuid, data.tx, data.ty);
+            } else if (event === "shoot_fireball") {
+                outer.receive_shoot_fireball(uuid, data.tx, data.ty, data.ball_uuid);
             }
         };
     }
@@ -524,6 +565,25 @@ class MultiPlayerSocket{
 
         if (player) {
             player.move_to(tx, ty);
+        }
+    }
+
+    send_shoot_fireball(tx, ty, ball_uuid) {
+        let outer = this;
+        this.ws.send(JSON.stringify({
+            'event': "shoot_fireball",
+            'uuid': outer.uuid,
+            'tx': tx,
+            'ty': ty,
+            'ball_uuid': ball_uuid,
+        }));
+    }
+
+    receive_shoot_fireball(uuid, tx, ty, ball_uuid) {
+        let player = this.get_player(uuid);
+        if (player) {
+            let fireball = player.shoot_fireball(tx, ty);
+            fireball.uuid = ball_uuid;
         }
     }
 }
