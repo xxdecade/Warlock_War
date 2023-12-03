@@ -100,7 +100,7 @@ class Player extends GameObject {
             }
         });
 
-        $(window).keydown(function(e) {
+        this.playground.game_map.$canvas.keydown(function(e) {
             if (outer.playground.state !== "fighting")
                 return true;
 
@@ -154,22 +154,7 @@ class Player extends GameObject {
         this.y += d * Math.sin(angle);
 
         this.blink_coldtime = 5;
-        this.move_length = 0;this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.arc(x * scale, y * scale, r * scale, 0, Math.PI * 2, false);
-        this.ctx.stroke();
-        this.ctx.clip();
-        this.ctx.drawImage(this.fireball_img, (x - r) * scale, (y - r) * scale, r * 2 * scale, r * 2 * scale);
-        this.ctx.restore();
-
-        if (this.fireball_coldtime > 0) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(x * scale, y * scale);
-            this.ctx.arc(x * scale, y * scale, r * scale, 0 - Math.PI / 2, Math.PI * 2 * (1 - this.fireball_coldtime / 3) - Math.PI / 2, false);
-            this.ctx.lineTo(x * scale, y * scale);
-            this.ctx.fillStyle = "rgba(0, 0, 255, 0.4)";
-            this.ctx.fill();
-        }
+        this.move_length = 0;
     }
 
     get_dist(x1, y1, x2, y2) {
